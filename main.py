@@ -31,7 +31,7 @@ while True:
     # Добавляем файл
     if command.lower() == 'add':
         with open('task.json', 'w', encoding='utf-8') as file:
-            if task_list['id'] == 0:
+            if not tasks:
                 task_list['id'] = 1
             else:
                 task_list['id'] = tasks[-1]['id'] + 1
@@ -41,4 +41,9 @@ while True:
             task_list['updated_at'] = '-'
             tasks.append(task_list)
             json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
+
+            print(f'Задача успешно добавлена! (ID: {task_list['id']})')
+
+
+
 
