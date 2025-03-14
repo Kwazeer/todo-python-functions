@@ -25,7 +25,7 @@ while True:
     try:
         with open('task.json', 'r', encoding='utf-8') as file:
             tasks = json.load(file)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         tasks = []
 
     # Добавляем файл
@@ -43,6 +43,14 @@ while True:
             json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
 
             print(f'Задача успешно добавлена! (ID: {task_list['id']})')
+
+    # Обновляем задачу по ID
+    if parts[0] == 'update' and parts[1].isdigit():
+        for task in tasks:
+            if task['id'] == int(parts[1]):
+                task['description'] = ' '.join(parts[2:])
+        with open('task.json', 'w', encoding='utf-8') as file:
+            json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
 
     # Отображаем все задачи
     if len(parts) == 1 and parts[0] == 'list':
