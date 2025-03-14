@@ -9,7 +9,6 @@ task_list = {
     'updated_at': 'updated_at'
 }
 
-
 while True:
     prompt = input('''Что вы хотите сделать?
     
@@ -61,6 +60,15 @@ while True:
         with open('task.json', 'w', encoding='utf-8') as file:
             json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
 
+    # Меняем статус задачи done
+    if len(parts) == 3 and parts[0] == 'mark' and parts[1].isdigit() and parts[2] == 'done' or parts[2] == 'todo' or \
+            parts[2] == 'in-progress':
+        for task in tasks:
+            if task['id'] == int(parts[1]):
+                task['status'] = parts[2]
+        with open('task.json', 'w', encoding='utf-8') as file:
+            json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
+
     # Отображаем все задачи
     if len(parts) == 1 and parts[0] == 'list':
         for task in tasks:
@@ -95,4 +103,3 @@ while True:
                             Задача: {task['description']}
                             Статус: {task['status']}
                             Дата создания: {task['created_at']}\n''')
-
