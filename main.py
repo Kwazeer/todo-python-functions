@@ -52,6 +52,15 @@ while True:
         with open('task.json', 'w', encoding='utf-8') as file:
             json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
 
+    # Удаляем задачу по ID
+    if len(parts) == 2 and parts[0] == 'delete' and parts[1].isdigit():
+        for i, task in enumerate(tasks):
+            if task['id'] == int(parts[1]):
+                del tasks[i]  # Удаляем по индексу из enumerate
+
+        with open('task.json', 'w', encoding='utf-8') as file:
+            json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
+
     # Отображаем все задачи
     if len(parts) == 1 and parts[0] == 'list':
         for task in tasks:
