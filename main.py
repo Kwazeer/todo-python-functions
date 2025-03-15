@@ -34,51 +34,74 @@ def add_task(parts):
             tasks.append(task_list)
             save_file(tasks)
 
-            print(f'Задача успешно добавлена! (ID: {task_list['id']})')
+            print(f'\nЗадача успешно добавлена! (ID: {task_list['id']})')
     else:
-        print('Произошла ошибка! Повторите ещё раз.')
+        print('\nПроизошла ошибка! Попробуйте ещё раз.')
 
 
 def update_task(parts):
     """Обновление задачи по ID"""
     tasks = load_file()
+    check = False
+
     if parts[0] == 'update' and parts[1].isdigit():
         for task in tasks:
             if task['id'] == int(parts[1]):
                 task['description'] = ' '.join(parts[2:])
                 task['updated_at'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        save_file(tasks)
+                check = True
+
+        # Удобная проверка на ошибки
+        if check:
+            save_file(tasks)
+            print(f'\nФайл с ID: {parts[1]} успешно обновлён!')
+        else:
+            print('\nID задачи не найден.')
     else:
-        print('Введён неверный ID. Повторите попытку.')
+        print('\nПроизошла ошибка! Попробуйте ещё раз.')
 
 
 def delete_task(parts):
     """Удаление задачи по ID"""
     tasks = load_file()
+    check = False
     if len(parts) == 2 and parts[0] == 'delete' and parts[1].isdigit():
         for i, task in enumerate(tasks):
             if task['id'] == int(parts[1]):
                 del tasks[i]  # Удаляем по индексу из enumerate
                 print('\nЗадача успешно удалена!')
-        save_file(tasks)
-    else:
-        print('Произошла ошибка. Повторите ещё раз.')
+                check = True
 
+        if check:
+            save_file(tasks)
+            print(f'\nЗадача с ID: {parts[1]} успешно удалена!')
+        else:
+            print('\nID задачи не найден.')
+    else:
+        print('\nПроизошла ошибка. Попробуйте ещё раз.')
 
 
 def marking_task_status(parts):
     """Изменяем статус задачи по ID"""
     tasks = load_file()
+    check = False
+
     if len(parts) == 3 and parts[0] == 'mark' and parts[1].isdigit() and (
             parts[2] == 'done' or parts[2] == 'todo' or parts[2] == 'in-progress'):
         for task in tasks:
             if task['id'] == int(parts[1]):
                 task['status'] = parts[2]
                 task['updated_at'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        save_file(tasks)
+                check = True
+
+        if check:
+            save_file(tasks)
+            print(f'\nСтатус с ID: {parts[1]} успешно обновлён!')
+        else:
+            print('\nID задачи не был найден.')
 
     else:
-        print('Введён неверный статус! Повторите ещё раз.')
+        print('\nПроизошла ошибка! Попробуйте ещё раз.')
 
 
 def show_task(parts):
@@ -90,19 +113,17 @@ def show_task(parts):
             Задача: {task['description']}
             Статус: {task['status']}
             Дата создания: {task['created_at']}\n''')
-    else:
-        print('Введён неверный статус! Повторите ещё раз.')
 
     # Отображаем задачи todo
-    if len(parts) == 2 and (parts[1] == 'todo' or parts[1] == 'done' or parts[1] == 'in-progress'):
+    elif len(parts) == 2 and (parts[1] == 'todo' or parts[1] == 'done' or parts[1] == 'in-progress'):
         for task in tasks:
             if task['status'] == 'todo':
                 print(f'''            ID задачи: {task['id']}
                             Задача: {task['description']}
                             Статус: {task['status']}
                             Дата создания: {task['created_at']}\n''')
-            else:
-                print('Введён неверный статус! Повторите ещё раз.')
+    else:
+        print('\nВведён неверный статус! Повторите ещё раз.')
 
 
 while True:
