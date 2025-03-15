@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 def load_file():
-    """Инициализация JSON файла"""
+    """Initializing JSON file"""
     try:
         with open('task.json', 'r', encoding='utf-8') as file:
             return json.load(file)
@@ -12,13 +12,13 @@ def load_file():
 
 
 def save_file(tasks):
-    """Сохранение JSON файла"""
+    """Saving JSON file"""
     with open('task.json', 'w', encoding='utf-8') as file:
         return json.dump(obj=tasks, fp=file, ensure_ascii=False, indent=4)
 
 
 def add_task(parts):
-    """Добавление задачи"""
+    """Adding new tasks"""
     tasks = load_file()
     task_list = {}
     if parts[0] == 'add':
@@ -34,13 +34,13 @@ def add_task(parts):
             tasks.append(task_list)
             save_file(tasks)
 
-            print(f'\nЗадача успешно добавлена! (ID: {task_list['id']})')
+            print(f'\nTask was successfully created! (ID: {task_list['id']})')
     else:
-        print('\nПроизошла ошибка! Попробуйте ещё раз.')
+        print('\nAn error occurred! Try again.')
 
 
 def update_task(parts):
-    """Обновление задачи по ID"""
+    """Updating task by ID"""
     tasks = load_file()
     check = False
 
@@ -51,38 +51,38 @@ def update_task(parts):
                 task['updated_at'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
                 check = True
 
-        # Удобная проверка на ошибки
+        # Checking for potential errors
         if check:
             save_file(tasks)
-            print(f'\nФайл с ID: {parts[1]} успешно обновлён!')
+            print(f'\nTask ID: {parts[1]} updated successfully!')
         else:
-            print('\nID задачи не найден.')
+            print('\nTask ID was not found.')
     else:
-        print('\nПроизошла ошибка! Попробуйте ещё раз.')
+        print('\nAn error occurred! Try again.')
 
 
 def delete_task(parts):
-    """Удаление задачи по ID"""
+    """Deleting task ID"""
     tasks = load_file()
     check = False
     if len(parts) == 2 and parts[0] == 'delete' and parts[1].isdigit():
         for i, task in enumerate(tasks):
             if task['id'] == int(parts[1]):
                 del tasks[i]  # Удаляем по индексу из enumerate
-                print('\nЗадача успешно удалена!')
+                print('\nThe task was deleted successfully!')
                 check = True
 
         if check:
             save_file(tasks)
-            print(f'\nЗадача с ID: {parts[1]} успешно удалена!')
+            print(f'\nTask with (ID {parts[1]}) was deleted successfully!')
         else:
-            print('\nID задачи не найден.')
+            print('\nTask ID was not found.')
     else:
-        print('\nПроизошла ошибка. Попробуйте ещё раз.')
+        print('\nAn error occurred! Try again.')
 
 
 def marking_task_status(parts):
-    """Изменяем статус задачи по ID"""
+    """Changing status of task by ID"""
     tasks = load_file()
     check = False
 
@@ -96,53 +96,53 @@ def marking_task_status(parts):
 
         if check:
             save_file(tasks)
-            print(f'\nСтатус с ID: {parts[1]} успешно обновлён!')
+            print(f'\nStatus with (ID: {parts[1]}) updated successfully!')
         else:
-            print('\nID задачи не был найден.')
+            print('\nTask ID was not found.')
 
     else:
-        print('\nПроизошла ошибка! Попробуйте ещё раз.')
+        print('\nAn error occurred! Try again.')
 
 
 def show_task(parts):
-    """Отображение списка всех задач"""
+    """Listing all tasks with filters"""
     tasks = load_file()
     if len(parts) == 1 and parts[0] == 'list':
         for task in tasks:
-            print(f'''            ID задачи: {task['id']}
-            Задача: {task['description']}
-            Статус: {task['status']}
-            Дата создания: {task['created_at']}\n''')
+            print(f'''            Task ID: {task['id']}
+            Task: {task['description']}
+            Status: {task['status']}
+            Creating date: {task['created_at']}\n''')
 
     # Отображаем задачи todo
     elif len(parts) == 2 and (parts[1] == 'todo' or parts[1] == 'done' or parts[1] == 'in-progress'):
         for task in tasks:
             if task['status'] == 'todo':
-                print(f'''            ID задачи: {task['id']}
-                            Задача: {task['description']}
-                            Статус: {task['status']}
-                            Дата создания: {task['created_at']}\n''')
+                print(f'''            Task ID: {task['id']}
+                            Task: {task['description']}
+                            Status: {task['status']}
+                            Creating date: {task['created_at']}\n''')
     else:
-        print('\nВведён неверный статус! Повторите ещё раз.')
+        print('\nStatus was invalid! Try again.')
 
 
 while True:
-    prompt = input('''\nЧто вы хотите сделать?
+    prompt = input('''\nType the command:
     
-    Добавление новой задачи: add <наименование задачи>
-    Обновление существующей задачи: update <id задачи> <текст>
-    Удаление задачи: delete <id>
-    Изменение статуса задачи: mark <id> <статус задачи>
-    Вывод списка задач: list <тип задачи>
-    Введите 'exit' чтобы закрыть программу
+    Adding new task: add <text>
+    Updating current task: update <task id> <text>
+    Deleting task: delete <id>
+    Changing status of task: mark <id> <status: todo, done, in-progress>
+    Show tasks: list <type: todo, done, in-progress>
+    === Type 'exit' to close the program. ===
     
-    Введите команду: ''')
+    Type command: ''')
 
-    # 'exit' для выхода из программы
+    # 'exit' to close the program
     if prompt == 'exit':
         break
 
-    parts = prompt.split()  # Деление ввода на части
+    parts = prompt.split()  # Dividing user input
 
     if parts[0] == 'add':
         add_task(parts)
@@ -155,4 +155,4 @@ while True:
     elif parts[0] == 'list':
         show_task(parts)
     else:
-        print('Неизвестная команда! Попробуйте снова.')
+        print('Unknown command! Try again.')
